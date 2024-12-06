@@ -68,14 +68,16 @@ def part_two(file_path):
 
     total = 0
 
-    _, _, stepped_over, first_pos = get_total_positions(content)
+    content_copy = [i.copy() for i in content]
+
+    _, _, stepped_over, first_pos = get_total_positions(content_copy)
 
     stepped_over_unique = list(set(stepped_over))
 
     for j, i in enumerate(stepped_over_unique):
         if i == first_pos:
             continue
-        copy = get_content(file_path)
+        copy = [i.copy() for i in content]
         copy[i[0]][i[1]] = "#"
         print(f"Trying {j}/{len(stepped_over)}")
         if get_total_positions(copy)[1]:
