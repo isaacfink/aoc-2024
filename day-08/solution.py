@@ -28,6 +28,38 @@ def create_antennas(input: list[list[str]]):
     return antennas
 
 
+def get_antinodes(
+    antennas: dict[str, list[tuple[int, int]]],
+    content: list[list[str]],
+    count_all=False,
+):
+    found_targets = set()
+    for antenna in antennas.values():
+        for first, second in itertools.combinations(antenna, 2):
+            diff = (first[0] - second[0], first[1] - second[1])
+            dirs = [
+                (first[0] + diff[0], first[1] + diff[1]),
+                (second[0] - diff[0], second[1] - diff[1]),
+                (first[0], first[1]) if count_all else None,
+                (second[0], second[1]) if count_all else None,
+            ]
+
+            if count_all:
+
+                while is_in_bounds(first, len(content)):
+                    first = (first[0] + diff[0], first[1] + diff[1])
+                    dirs.append(first)
+
+                while is_in_bounds(second, len(content)):
+                    second = (second[0] - diff[0], second[1] - diff[1])
+                    dirs.append(second)
+
+            for dir in dirs:
+                if dir is not None and is_in_bounds(dir, len(content)):
+                    found_targets.add(f"{dir[0]}-{dir[1]}")
+    return found_targets
+
+
 def is_in_bounds(point: tuple[int, int], size: int):
     return all([point[0] >= 0, point[0] < size, point[1] >= 0, point[1] < size])
 
@@ -35,21 +67,8 @@ def is_in_bounds(point: tuple[int, int], size: int):
 def part_one(file_path):
     content = get_content(file_path)
 
-    found_targets: set[str] = set()
-
     antennas = create_antennas(content)
-
-    for antenna in antennas.values():
-        for first, second in itertools.combinations(antenna, 2):
-            diff = (first[0] - second[0], first[1] - second[1])
-            dirs = [
-                (first[0] + diff[0], first[1] + diff[1]),
-                (second[0] - diff[0], second[1] - diff[1]),
-            ]
-
-            for dir in dirs:
-                if is_in_bounds(dir, len(content)):
-                    found_targets.add(f"{dir[0]}-{dir[1]}")
+    found_targets = get_antinodes(antennas, content)
 
     return len(found_targets)
 
@@ -57,31 +76,8 @@ def part_one(file_path):
 def part_two(file_path):
     content = get_content(file_path)
 
-    found_targets: set[str] = set()
-
     antennas = create_antennas(content)
-
-    for antenna in antennas.values():
-        for first, second in itertools.combinations(antenna, 2):
-            diff = (first[0] - second[0], first[1] - second[1])
-            dirs = [
-                (first[0] + diff[0], first[1] + diff[1]),
-                (second[0] - diff[0], second[1] - diff[1]),
-                (first[0], first[1]),
-                (second[0], second[1]),
-            ]
-
-            while is_in_bounds(first, len(content)):
-                first = (first[0] + diff[0], first[1] + diff[1])
-                dirs.append(first)
-
-            while is_in_bounds(second, len(content)):
-                second = (second[0] - diff[0], second[1] - diff[1])
-                dirs.append(second)
-
-            for dir in dirs:
-                if is_in_bounds(dir, len(content)):
-                    found_targets.add(f"{dir[0]}-{dir[1]}")
+    found_targets = get_antinodes(antennas, content, True)
 
     return len(found_targets)
 
