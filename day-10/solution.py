@@ -1,5 +1,4 @@
 import time
-from alive_progress import alive_bar
 
 start = time.time()
 
