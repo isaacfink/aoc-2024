@@ -47,9 +47,9 @@ def part_two(file_path):
     return solve(file_path, 75)
 
 
-print(part_one("test.txt"))  # 55312
-print(part_one("input.txt"))  # 199986
-print(part_two("input.txt"))  # 236804088748754
+print(part_one("test.txt"))  # 55,312
+print(part_one("input.txt"))  # 199,986
+print(part_two("input.txt"))  # 236,804,088,748,754
 
 end = time.time()
 elapsed = end - start
